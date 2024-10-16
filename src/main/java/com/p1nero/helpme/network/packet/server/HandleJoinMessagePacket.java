@@ -24,7 +24,7 @@ public record HandleJoinMessagePacket(Component component) implements BasePacket
     @Override
     public void execute(Player player) {
         if(player instanceof ServerPlayer serverPlayer){
-            for(ServerPlayer target : serverPlayer.getLevel().players()){
+            for(ServerPlayer target : serverPlayer.getLevel().getServer().getPlayerList().getPlayers()){
                 target.displayClientMessage(serverPlayer.getDisplayName().copy().append(component), false);
             }
         }

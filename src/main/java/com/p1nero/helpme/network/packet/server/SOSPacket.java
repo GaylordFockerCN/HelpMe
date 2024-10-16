@@ -30,7 +30,7 @@ public record SOSPacket(Component component) implements BasePacket {
     @Override
     public void execute(Player player) {
         if(player instanceof ServerPlayer serverPlayer){
-            for(ServerPlayer target: serverPlayer.getLevel().players()){
+            for(ServerPlayer target: serverPlayer.getLevel().getServer().getPlayerList().getPlayers()){
                 if(!serverPlayer.equals(target)){
                     TPACommands.tpa(serverPlayer, target, true);
                 }
