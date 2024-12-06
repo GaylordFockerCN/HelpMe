@@ -10,8 +10,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.Objects;
-
 /**
  * 根据客户端的需求来播动画
  */

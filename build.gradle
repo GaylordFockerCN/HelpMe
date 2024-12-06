@@ -1,99 +1,66 @@
 buildscript {
     repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = "https://repo.spongepowered.org/maven" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     }
 }
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
 plugins {
     id 'eclipse'
+    id 'idea'
     id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+//    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
 
+version = mod_version
+group = mod_group_id
 
-version = '1.0.1'
-group = 'com.p1nero.help_me' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'help_me-forge1.18.2'
+base {
+    archivesName = mod_id+'-forge'+minecraft_version + "-" + System.currentTimeSeconds()
+}
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.18.2'
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+    mappings channel: mapping_channel, version: mapping_version
+
+    copyIdeResources = true
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
-        client {
+        configureEach {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'help_me'
-
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            args '-mixin.config=help_me.mixins.json'
+            arg "-mixin.config=help_me.mixins.json"
             mods {
-                help_me {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
+            arg "-mixin.config=help_me.mixins.json"
         }
 
         server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'help_me'
-
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            args '-mixin.config=help_me.mixins.json'
-            mods {
-                help_me {
-                    source sourceSets.main
-                }
-            }
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
         }
 
         gameTestServer {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'help_me'
-
-            mods {
-                help_me {
-                    source sourceSets.main
-                }
-            }
+            property 'forge.enabledGameTestNamespaces', mod_id
         }
 
         data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'help_me', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                help_me {
-                    source sourceSets.main
-                }
-            }
+            workingDirectory project.file('run-data')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
@@ -101,43 +68,66 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-     flatDir {
-         dir 'libs'
-     }
+    mavenCentral()
+
+    maven {
+        url "https://repo.spongepowered.org/repository/maven-public/"
+    }
+
+    flatDir {
+        dir 'libs'
+    }
+
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.2.17'
-    implementation fg.deobf("libs:ftblibrary:1802.3.11")
-    implementation fg.deobf("libs:ftbessentials:1802.2.2")
-    implementation fg.deobf("libs:architectury:4.12.94")
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation fg.deobf('libs:architectury:9.2.14')
+    implementation fg.deobf('libs:ftbessentials:2001.2.2')
+    implementation fg.deobf('libs:ftblibrary:2001.2.6')
 }
 
 mixin {
-    add sourceSets.main, "help_me.mixins.refmap.json"
+    add sourceSets.main, 'help_me.mixin-refmap.json'
+    config 'help_me.mixins.json'
 }
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "HELP ME",
-                "Specification-Vendor"    : "p1nero",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "p1nero",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "help_me.mixins.json"
-        ])
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version: forge_version, forge_version_range: forge_version_range,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
     }
 }
 
-jar.finalizedBy('reobfJar')
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "help_me.mixins.json"
+        ])
+    }
+
+    finalizedBy 'reobfJar'
+}
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
         }
     }
@@ -149,5 +139,5 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }

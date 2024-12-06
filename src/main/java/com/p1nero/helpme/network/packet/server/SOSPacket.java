@@ -2,10 +2,8 @@ package com.p1nero.helpme.network.packet.server;
 
 import com.p1nero.helpme.network.packet.BasePacket;
 import dev.ftb.mods.ftbessentials.command.TPACommands;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -30,13 +28,13 @@ public record SOSPacket(Component component) implements BasePacket {
     @Override
     public void execute(Player player) {
         if(player instanceof ServerPlayer serverPlayer){
-            for(ServerPlayer target: serverPlayer.getLevel().getServer().getPlayerList().getPlayers()){
+            for(ServerPlayer target: serverPlayer.serverLevel().getServer().getPlayerList().getPlayers()){
                 if(!serverPlayer.equals(target)){
                     TPACommands.tpa(serverPlayer, target, true);
                 }
                 target.displayClientMessage(serverPlayer.getDisplayName().copy().append(component), false);
             }
-            ServerLevel level = serverPlayer.getLevel();
+            ServerLevel level = serverPlayer.serverLevel();
             FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, serverPlayer, player.getX(), player.getY(), player.getZ(), new ItemStack(Items.FIREWORK_ROCKET));
             level.addFreshEntity(fireworkrocketentity);
         }
