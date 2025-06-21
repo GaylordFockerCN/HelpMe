@@ -2,12 +2,11 @@
   "required": true,
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
-  "package": "com.p1nero.helpme.mixins",
+  "package": "com.p1nero.fast_tpa.mixins",
   "mixins": [
-    "TPACommandsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "help_me.mixins.refmap.json"
+  "refmap": "fast_tpa.mixins.refmap.json"
 }

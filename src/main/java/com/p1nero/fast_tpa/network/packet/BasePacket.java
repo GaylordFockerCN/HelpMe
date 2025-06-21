@@ -1,4 +1,4 @@
-package com.p1nero.helpme.network.packet;
+package com.p1nero.fast_tpa.network.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;

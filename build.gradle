@@ -36,7 +36,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config=help_me.mixins.json"
+            arg "-mixin.config=fast_tpa.mixins.json"
             mods {
                 "${mod_id}" {
                     source sourceSets.main
@@ -46,7 +46,7 @@ minecraft {
 
         client {
             property 'forge.enabledGameTestNamespaces', mod_id
-            arg "-mixin.config=help_me.mixins.json"
+            arg "-mixin.config=fast_tpa.mixins.json"
         }
 
         server {
@@ -83,14 +83,11 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf('libs:architectury:9.2.14')
-    implementation fg.deobf('libs:ftbessentials:2001.2.2')
-    implementation fg.deobf('libs:ftblibrary:2001.2.6')
 }
 
 mixin {
-    add sourceSets.main, 'help_me.mixin-refmap.json'
-    config 'help_me.mixins.json'
+    add sourceSets.main, 'fast_tpa.mixin-refmap.json'
+    config 'fast_tpa.mixins.json'
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -118,7 +115,7 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Version'  : project.jar.archiveVersion,
                 'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "help_me.mixins.json"
+                "MixinConfigs": "fast_tpa.mixins.json"
         ])
     }
 

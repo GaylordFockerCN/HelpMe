@@ -1,10 +1,10 @@
-package com.p1nero.helpme.network;
+package com.p1nero.fast_tpa.network;
 
-import com.p1nero.helpme.HelpMe;
-import com.p1nero.helpme.network.packet.BasePacket;
-import com.p1nero.helpme.network.packet.client.GetJoinMessagePacket;
-import com.p1nero.helpme.network.packet.server.HandleJoinMessagePacket;
-import com.p1nero.helpme.network.packet.server.SOSPacket;
+import com.p1nero.fast_tpa.FastTPA;
+import com.p1nero.fast_tpa.network.packet.BasePacket;
+import com.p1nero.fast_tpa.network.packet.client.GetJoinMessagePacket;
+import com.p1nero.fast_tpa.network.packet.server.HandleJoinMessagePacket;
+import com.p1nero.fast_tpa.network.packet.server.SOSPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(HelpMe.MOD_ID, "main"),
+            new ResourceLocation(FastTPA.MOD_ID, "main"),
             () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals
     );
 

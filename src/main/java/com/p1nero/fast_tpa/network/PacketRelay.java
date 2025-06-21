@@ -1,4 +1,4 @@
-package com.p1nero.helpme.network;
+package com.p1nero.fast_tpa.network;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
