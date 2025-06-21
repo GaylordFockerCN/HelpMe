@@ -36,11 +36,12 @@ public record SOSPacket(Component component) implements BasePacket {
                 self.displayClientMessage(Component.translatable("info.fast_tpa.cooldown", left / 20).withStyle(ChatFormatting.BOLD, ChatFormatting.RED), false);
                 return;
             }
+            MutableComponent formattedMessage = FastTPA.getFormattedName(self).append(component);
             for (ServerPlayer target : self.serverLevel().getServer().getPlayerList().getPlayers()) {
                 if(target == self) {
                     continue;
                 }
-                target.displayClientMessage(self.getDisplayName().copy().append(component), false);
+                target.displayClientMessage(formattedMessage, false);
                 MutableComponent accept = Component.translatable("info.fast_tpa.accept");
                 accept.setStyle(Style.EMPTY
                         .applyFormat(ChatFormatting.GREEN)
@@ -50,7 +51,7 @@ public record SOSPacket(Component component) implements BasePacket {
                 target.displayClientMessage(accept, false);
                 target.getPersistentData().putBoolean(FastTPA.ACCEPTED, false);
             }
-            self.displayClientMessage(self.getDisplayName().copy().append(component), false);
+            self.displayClientMessage(formattedMessage, false);
             ServerLevel level = self.serverLevel();
             FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, self, player.getX(), player.getY(), player.getZ(), new ItemStack(Items.FIREWORK_ROCKET));
             level.addFreshEntity(fireworkrocketentity);

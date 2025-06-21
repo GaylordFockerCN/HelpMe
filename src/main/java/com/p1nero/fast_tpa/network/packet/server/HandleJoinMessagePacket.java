@@ -1,9 +1,11 @@
 package com.p1nero.fast_tpa.network.packet.server;
 
+import com.p1nero.fast_tpa.FastTPA;
 import com.p1nero.fast_tpa.config.ServerConfig;
 import com.p1nero.fast_tpa.network.packet.BasePacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -24,15 +26,16 @@ public record HandleJoinMessagePacket(Component component, UUID id) implements B
     @Override
     public void execute(Player player) {
         if(player instanceof ServerPlayer self){
+            MutableComponent formattedMessage = FastTPA.getFormattedName(self).append(component);
             if(ServerConfig.BROADCAST.get()) {
                 for(ServerPlayer serverPlayer : self.server.getPlayerList().getPlayers()) {
-                    serverPlayer.displayClientMessage(self.getDisplayName().copy().append(component), false);
+                    serverPlayer.displayClientMessage(formattedMessage, false);
                 }
             } else {
                 Player original = self.serverLevel().getPlayerByUUID(id);
                 if(original != null) {
-                    original.displayClientMessage(self.getDisplayName().copy().append(component), false);
-                    self.displayClientMessage(self.getDisplayName().copy().append(component), false);
+                    original.displayClientMessage(formattedMessage, false);
+                    self.displayClientMessage(formattedMessage, false);
                 }
             }
         }

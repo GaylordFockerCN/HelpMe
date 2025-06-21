@@ -2,5 +2,6 @@
   "key.fast_tpa.send": "send SOS",
   "key.fast_tpa.category": "Fast TPA",
   "info.fast_tpa.accept": " §a[Go to help]",
-  "info.fast_tpa.cooldown": "In Cooldown! Wait for %ds"
+  "info.fast_tpa.cooldown": "In Cooldown! Wait for %ds",
+  "info.fast_tpa.already": "§cAlready teleported!"
 }

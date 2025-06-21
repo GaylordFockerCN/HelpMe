@@ -3,6 +3,9 @@ package com.p1nero.fast_tpa;
 import com.p1nero.fast_tpa.config.ClientConfig;
 import com.p1nero.fast_tpa.config.ServerConfig;
 import com.p1nero.fast_tpa.network.PacketHandler;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -17,4 +20,9 @@ public class FastTPA {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ServerConfig.SPEC);
     }
+
+    public static MutableComponent getFormattedName(Player player) {
+        return Component.literal("[").append(player.getDisplayName()).append("] : ");
+    }
+
 }

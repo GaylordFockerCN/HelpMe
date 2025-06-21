@@ -24,12 +24,12 @@ public class ClientConfig
         SOS_MESSAGE = BUILDER
                 .comment("默认发送的求救文本")
                 .comment("https://minecraft.tools/en/json_text.php")
-                .define("sos_message", "{" + "  \"text\": \" : §l§o§6【发出救难信号】\"" + "}");
+                .define("sos_message", "{" + "  \"text\": \"§l§o§6【发出救难信号】\"" + "}");
 
         WHEN_JOIN = BUILDER
                 .comment("默认发送的支援文本")
                 .comment("https://minecraft.tools/en/json_text.php")
-                .define("when_join", "[\"\",{\"text\":\": \\u5b69\",\"color\":\"aqua\"},{\"text\":\"\\u5b50\",\"color\":\"red\"},{\"text\":\"\\u522b\"},{\"text\":\"\\u6015\",\"color\":\"dark_green\"},{\"text\":\"\\uff0c\",\"color\":\"dark_gray\"},{\"text\":\"\\u6211\",\"color\":\"gold\"},{\"text\":\"\\u6765\",\"color\":\"green\"},{\"text\":\"\\u52a9\",\"color\":\"dark_blue\"},{\"text\":\"\\u4f60\\uff01\",\"color\":\"yellow\"},{\"text\":\"[\\u70b9\\u51fb\\u67e5\\u770bjson\\u6587\\u672c\\u751f\\u6210\\u5668]\",\"color\":\"gray\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://minecraft.tools/en/json_text.php\"}},{\"text\":\" \\n\\u63d0\\u793a\\uff1a\\u7528fast_tpa_client\\u7cfb\\u5217\\u547d\\u4ee4\\u4e5f\\u53ef\\u4ee5\\u76f4\\u63a5\\u8fdb\\u884c\\u4fee\\u6539\\uff01\"}]");
+                .define("when_join", "[\"\",{\"text\":\"\\u5b69\",\"color\":\"aqua\"},{\"text\":\"\\u5b50\",\"color\":\"red\"},{\"text\":\"\\u522b\"},{\"text\":\"\\u6015\",\"color\":\"dark_green\"},{\"text\":\"\\uff0c\",\"color\":\"dark_gray\"},{\"text\":\"\\u6211\",\"color\":\"gold\"},{\"text\":\"\\u6765\",\"color\":\"green\"},{\"text\":\"\\u52a9\",\"color\":\"dark_blue\"},{\"text\":\"\\u4f60\\uff01\",\"color\":\"yellow\"},{\"text\":\"[\\u70b9\\u51fb\\u67e5\\u770bjson\\u6587\\u672c\\u751f\\u6210\\u5668]\",\"color\":\"gray\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://minecraft.tools/en/json_text.php\"}},{\"text\":\" \\n\\u63d0\\u793a\\uff1a\\u7528fast_tpa_client\\u7cfb\\u5217\\u547d\\u4ee4\\u4e5f\\u53ef\\u4ee5\\u76f4\\u63a5\\u8fdb\\u884c\\u4fee\\u6539\\uff01\"}]");
         SPEC = BUILDER.build();
     }
 

@@ -34,6 +34,7 @@ public class TeleportCommand {
          throw INVALID_POSITION.create();
       }
       if(other.getPersistentData().getBoolean(FastTPA.ACCEPTED)) {
+         other.displayClientMessage(Component.translatable("info.fast_tpa.already"), false);
          return 0;
       }
       other.teleportTo(self.serverLevel(), self.getX(), self.getY(), self.getZ(), other.getYRot(), other.getXRot());
