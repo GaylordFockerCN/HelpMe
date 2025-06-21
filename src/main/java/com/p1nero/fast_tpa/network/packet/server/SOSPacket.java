@@ -2,38 +2,49 @@ package com.p1nero.fast_tpa.network.packet.server;
 
 import com.p1nero.fast_tpa.FastTPA;
 import com.p1nero.fast_tpa.config.ServerConfig;
-import com.p1nero.fast_tpa.network.packet.BasePacket;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public record SOSPacket(Component component) implements BasePacket {
-
-    @Override
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeComponent(component);
-    }
-
-    public static SOSPacket decode(FriendlyByteBuf buf) {
-        return new SOSPacket(buf.readComponent());
-    }
+public record SOSPacket(String message) implements CustomPacketPayload {
+    public static final Type<SOSPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(FastTPA.MOD_ID, "sos_packet"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SOSPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.stringUtf8(262144),
+            SOSPacket::message,
+            SOSPacket::new);
 
     @Override
-    public void execute(Player player) {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    public static void execute(SOSPacket packet, IPayloadContext context) {
+        Player player = context.player();
         if (player instanceof ServerPlayer self) {
             int lastSendTime = self.getPersistentData().getInt(FastTPA.LAST_SEND_TIME);
             int left = ServerConfig.COOLDOWN.get() - (self.tickCount - lastSendTime);
             if(lastSendTime != 0 && left > 0) {
                 self.displayClientMessage(Component.translatable("info.fast_tpa.cooldown", left / 20).withStyle(ChatFormatting.BOLD, ChatFormatting.RED), false);
+                return;
+            }
+            Component component = Component.Serializer.fromJson(packet.message, self.registryAccess());
+            if(component == null) {
+                self.displayClientMessage(Component.literal("ERROR").withStyle(ChatFormatting.BOLD, ChatFormatting.RED), false);
                 return;
             }
             MutableComponent formattedMessage = FastTPA.getFormattedName(self).append(component);

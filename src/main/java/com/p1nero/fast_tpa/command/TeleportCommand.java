@@ -4,19 +4,18 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.p1nero.fast_tpa.FastTPA;
-import com.p1nero.fast_tpa.network.PacketHandler;
-import com.p1nero.fast_tpa.network.PacketRelay;
 import com.p1nero.fast_tpa.network.packet.client.GetJoinMessagePacket;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-@Mod.EventBusSubscriber(modid = FastTPA.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = FastTPA.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class TeleportCommand {
    private static final SimpleCommandExceptionType INVALID_POSITION = new SimpleCommandExceptionType(Component.translatable("commands.teleport.invalidPosition"));
    @SubscribeEvent
@@ -39,7 +38,7 @@ public class TeleportCommand {
       }
       other.teleportTo(self.serverLevel(), self.getX(), self.getY(), self.getZ(), other.getYRot(), other.getXRot());
       other.getPersistentData().putBoolean(FastTPA.ACCEPTED, true);
-      PacketRelay.sendToPlayer(PacketHandler.INSTANCE, new GetJoinMessagePacket(self.getUUID()), other);
+      PacketDistributor.sendToPlayer(other, new GetJoinMessagePacket(self.getUUID().toString()));
       return 1;
    }
 

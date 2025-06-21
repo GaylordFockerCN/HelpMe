@@ -8,18 +8,18 @@ import com.p1nero.fast_tpa.FastTPA;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-@Mod.EventBusSubscriber(modid = FastTPA.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = FastTPA.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class ServerConfig
 {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec.ConfigValue<Integer> COOLDOWN;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> BROADCAST;
-    public static final ForgeConfigSpec SPEC;
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec.ConfigValue<Integer> COOLDOWN;
+    public static final ModConfigSpec.ConfigValue<Boolean> BROADCAST;
+    public static final ModConfigSpec SPEC;
 
     static {
         COOLDOWN = BUILDER
@@ -50,7 +50,7 @@ public class ServerConfig
         );
     }
 
-    private static <T extends ForgeConfigSpec.ConfigValue<E>, E> int setData(T key, E value, CommandContext<CommandSourceStack> context) {
+    private static <T extends ModConfigSpec.ConfigValue<E>, E> int setData(T key, E value, CommandContext<CommandSourceStack> context) {
         CommandSourceStack stack = context.getSource();
         key.set(value);
         if(stack.getPlayer() != null){

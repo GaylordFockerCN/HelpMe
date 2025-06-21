@@ -7,18 +7,18 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ComponentArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-@Mod.EventBusSubscriber(modid = FastTPA.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = FastTPA.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class ClientConfig
 {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec.ConfigValue<String> SOS_MESSAGE;
-    public static final ForgeConfigSpec.ConfigValue<String> WHEN_JOIN;
-    public static final ForgeConfigSpec SPEC;
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec.ConfigValue<String> SOS_MESSAGE;
+    public static final ModConfigSpec.ConfigValue<String> WHEN_JOIN;
+    public static final ModConfigSpec SPEC;
 
     static {
         SOS_MESSAGE = BUILDER
@@ -38,19 +38,19 @@ public class ClientConfig
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("fast_tpa_client")
                 .then(Commands.literal("sos_message")
-                    .then(Commands.argument("value", ComponentArgument.textComponent())
-                            .executes((context) -> setData(SOS_MESSAGE, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value")), context))
+                    .then(Commands.argument("value", ComponentArgument.textComponent(event.getBuildContext()))
+                            .executes((context) -> setData(SOS_MESSAGE, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value"), context.getSource().registryAccess()), context))
                     )
                 )
                 .then(Commands.literal("when_join")
-                        .then(Commands.argument("value", ComponentArgument.textComponent())
-                                .executes((context) -> setData(WHEN_JOIN, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value")), context))
+                        .then(Commands.argument("value", ComponentArgument.textComponent(event.getBuildContext()))
+                                .executes((context) -> setData(WHEN_JOIN, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value"), context.getSource().registryAccess()), context))
                         )
                 )
         );
     }
 
-    private static <T extends ForgeConfigSpec.ConfigValue<E>, E> int setData(T key, E value, CommandContext<CommandSourceStack> context) {
+    private static <T extends ModConfigSpec.ConfigValue<E>, E> int setData(T key, E value, CommandContext<CommandSourceStack> context) {
         CommandSourceStack stack = context.getSource();
         key.set(value);
         if(stack.getPlayer() != null){

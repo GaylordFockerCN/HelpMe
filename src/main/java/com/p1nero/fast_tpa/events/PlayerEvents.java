@@ -2,11 +2,11 @@ package com.p1nero.fast_tpa.events;
 
 import com.p1nero.fast_tpa.FastTPA;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-@Mod.EventBusSubscriber(modid = FastTPA.MOD_ID)
+@EventBusSubscriber(modid = FastTPA.MOD_ID)
 public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
