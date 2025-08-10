@@ -19,6 +19,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class FastTPA {
     public static final String MOD_ID = "fast_tpa";
     public static final String ACCEPTED = "accepted";
+    public static final String CAN_ACCEPT = "can_accept";
     public static final String LAST_SEND_TIME = "last_send_time";
     public FastTPA(ModContainer modContainer, IEventBus bus){
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
@@ -38,10 +39,7 @@ public class FastTPA {
     }
 
     public static MutableComponent getFormattedName(Player player) {
-        if(player.getDisplayName() != null) {
-            return Component.literal("[").append(player.getDisplayName()).append("] : ");
-        }
-        return Component.literal("[").append(player.getScoreboardName()).append("] : ");
+        return Component.literal("[").append(player.getDisplayName()).append("] : ");
     }
 
 }

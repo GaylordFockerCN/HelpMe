@@ -22,7 +22,10 @@ public class TeleportCommand {
    public static void register(RegisterCommandsEvent event) {
       CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
       dispatcher.register(Commands.literal("fast_tpa_tp")
-              .requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
+              .requires((commandSourceStack) -> {
+                 ServerPlayer serverPlayer = commandSourceStack.getPlayer();
+                 return serverPlayer != null && serverPlayer.getPersistentData().getBoolean(FastTPA.CAN_ACCEPT);
+              })
               .then(Commands.argument("other", EntityArgument.player())
                       .then(Commands.argument("self", EntityArgument.player())
                               .executes((commandContext -> tp(EntityArgument.getPlayer(commandContext, "other"), EntityArgument.getPlayer(commandContext, "self")))))));
@@ -38,6 +41,7 @@ public class TeleportCommand {
       }
       other.teleportTo(self.serverLevel(), self.getX(), self.getY(), self.getZ(), other.getYRot(), other.getXRot());
       other.getPersistentData().putBoolean(FastTPA.ACCEPTED, true);
+      other.getPersistentData().putBoolean(FastTPA.CAN_ACCEPT, false);
       PacketDistributor.sendToPlayer(other, new GetJoinMessagePacket(self.getUUID().toString()));
       return 1;
    }
