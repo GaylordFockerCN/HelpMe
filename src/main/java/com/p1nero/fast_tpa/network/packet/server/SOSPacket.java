@@ -50,6 +50,7 @@ public record SOSPacket(Component component) implements BasePacket {
                 );
                 target.displayClientMessage(accept, false);
                 target.getPersistentData().putBoolean(FastTPA.ACCEPTED, false);
+                target.getPersistentData().putBoolean(FastTPA.CAN_ACCEPT, true);
             }
             self.displayClientMessage(formattedMessage, false);
             ServerLevel level = self.serverLevel();

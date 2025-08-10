@@ -14,6 +14,7 @@ import net.minecraftforge.fml.config.ModConfig;
 public class FastTPA {
     public static final String MOD_ID = "fast_tpa";
     public static final String ACCEPTED = "accepted";
+    public static final String CAN_ACCEPT = "can_accept";
     public static final String LAST_SEND_TIME = "last_send_time";
     public FastTPA(){
         PacketHandler.register();

@@ -29,7 +29,6 @@ public class KeyMappings {
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if(event.phase.equals(TickEvent.Phase.END)){
                 while (SEND.consumeClick()){
-
                     PacketRelay.sendToServer(PacketHandler.INSTANCE, new SOSPacket(Component.Serializer.fromJson(ClientConfig.SOS_MESSAGE.get())));
                 }
             }

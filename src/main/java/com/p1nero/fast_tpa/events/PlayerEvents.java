@@ -20,6 +20,7 @@ public class PlayerEvents {
 
     public static void init(Player serverPlayer) {
         serverPlayer.getPersistentData().putBoolean(FastTPA.ACCEPTED, false);
+        serverPlayer.getPersistentData().putBoolean(FastTPA.CAN_ACCEPT, false);
         serverPlayer.getPersistentData().putInt(FastTPA.LAST_SEND_TIME, 0);
     }
 
