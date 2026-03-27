@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.p1nero.fast_tpa.FastTPAMod;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ComponentArgument;
@@ -57,7 +58,7 @@ public class ClientConfig
         CommandSourceStack stack = context.getSource();
         key.set(value);
         if(stack.getPlayer() != null){
-            stack.getPlayer().sendSystemMessage(Component.literal( context.getInput() + " : SUCCESS"));
+            stack.getPlayer().sendSystemMessage(Component.literal( context.getInput() + " : SUCCESS").withStyle(ChatFormatting.GREEN));
         }
         return 0;
     }

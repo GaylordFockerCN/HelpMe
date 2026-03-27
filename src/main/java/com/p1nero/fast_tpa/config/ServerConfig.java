@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.p1nero.fast_tpa.FastTPAMod;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -14,25 +15,26 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(modid = FastTPAMod.MOD_ID)
 public class ServerConfig {
     private static boolean broadcast, playSound;
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.ConfigValue<Integer> COOLDOWN = BUILDER
+    public static final ModConfigSpec.ConfigValue<@NotNull Integer> COOLDOWN = BUILDER
             .comment("发送冷却(tick)")
             .comment("Cooldown(tick)")
             .defineInRange("cooldown", 600, 0, Integer.MAX_VALUE);
-    public static final ModConfigSpec.ConfigValue<Boolean>
+    public static final ModConfigSpec.ConfigValue<@NotNull Boolean>
             BROADCAST = BUILDER
             .comment("是否全局广播救援文本 为true全局可见 为false则只有求救者可见")
             .comment("Broadcast to all when tp. If true, all players can see, or only sender can see.")
             .define("broadcast", true);
-    public static final ModConfigSpec.ConfigValue<String> FORMAT = BUILDER
+    public static final ModConfigSpec.ConfigValue<@NotNull String> FORMAT = BUILDER
             .comment("默认名字播报格式 如：<Steve>")
             .comment("Format of name. Default: <Steve>")
             .define("format", "[%s] : ");
-    public static final ModConfigSpec.ConfigValue<Boolean> PLAY_SOUND = BUILDER
+    public static final ModConfigSpec.ConfigValue<@NotNull Boolean> PLAY_SOUND = BUILDER
             .comment("是否播放救援音频")
             .comment("Enable playing sound when tp")
             .define("play_sound", true);
@@ -79,11 +81,11 @@ public class ServerConfig {
         playSound = PLAY_SOUND.get();
     }
 
-    private static <T extends ModConfigSpec.ConfigValue<E>, E> int setData(T key, E value, CommandContext<CommandSourceStack> context) {
+    private static <T extends ModConfigSpec.ConfigValue<@NotNull E>, E> int setData(T key, E value, CommandContext<CommandSourceStack> context) {
         CommandSourceStack stack = context.getSource();
         key.set(value);
         if(stack.getPlayer() != null){
-            stack.getPlayer().sendSystemMessage(Component.literal( context.getInput() + " : SUCCESS"));
+            stack.getPlayer().sendSystemMessage(Component.literal( context.getInput() + " : SUCCESS").withStyle(ChatFormatting.GREEN));
         }
         return 0;
     }

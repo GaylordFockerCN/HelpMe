@@ -26,7 +26,10 @@ public class TeleportCommand {
       dispatcher.register(Commands.literal("fast_tpa_tp")
               .requires((commandSourceStack) -> {
                  ServerPlayer serverPlayer = commandSourceStack.getPlayer();
-                 return serverPlayer != null && serverPlayer.getPersistentData().getBooleanOr(FastTPAMod.CAN_ACCEPT, true);
+                 if(serverPlayer == null) {
+                     return true;
+                 }
+                 return serverPlayer.getPersistentData().getBooleanOr(FastTPAMod.CAN_ACCEPT, false);
               })
               .then(Commands.argument("other", EntityArgument.player())
                       .then(Commands.argument("self", EntityArgument.player())
