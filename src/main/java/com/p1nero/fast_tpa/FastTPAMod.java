@@ -7,6 +7,7 @@ import com.p1nero.fast_tpa.network.packet.server.HandleJoinMessagePacket;
 import com.p1nero.fast_tpa.network.packet.server.SOSPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -15,15 +16,15 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@Mod(FastTPA.MOD_ID)
-public class FastTPA {
+@Mod(FastTPAMod.MOD_ID)
+public class FastTPAMod {
     public static final String MOD_ID = "fast_tpa";
     public static final String ACCEPTED = "accepted";
     public static final String CAN_ACCEPT = "can_accept";
     public static final String LAST_SEND_TIME = "last_send_time";
-    public FastTPA(ModContainer modContainer, IEventBus bus){
+    public FastTPAMod(ModContainer modContainer, IEventBus bus){
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        modContainer.registerConfig(ModConfig.Type.COMMON, ServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, ServerConfig.SPEC, MOD_ID + "-server.toml");
 
         bus.addListener(this::registerPackets);
     }
@@ -38,8 +39,8 @@ public class FastTPA {
         registrar.playToServer(SOSPacket.TYPE, SOSPacket.STREAM_CODEC, SOSPacket::execute);
     }
 
-    public static MutableComponent getFormattedName(Player player) {
-        return Component.literal("[").append(player.getDisplayName()).append("] : ");
+    public static MutableComponent getFormattedName(ServerPlayer player) {
+        return Component.literal(String.format(ServerConfig.FORMAT.get(), player.getScoreboardName()));
     }
 
 }

@@ -1,28 +1,34 @@
 package com.p1nero.fast_tpa.network.packet.server;
 
-import com.p1nero.fast_tpa.FastTPA;
+import com.p1nero.fast_tpa.FastTPAMod;
 import com.p1nero.fast_tpa.config.ServerConfig;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public record HandleJoinMessagePacket(String message, String id) implements CustomPacketPayload {
-    public static final Type<HandleJoinMessagePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(FastTPA.MOD_ID, "handle_join_message_packet"));
+public record HandleJoinMessagePacket(Component message, String id, String soundId) implements CustomPacketPayload {
+    public static final Type<HandleJoinMessagePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(FastTPAMod.MOD_ID, "handle_join_message_packet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, HandleJoinMessagePacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.stringUtf8(262144),
+            ComponentSerialization.STREAM_CODEC,
             HandleJoinMessagePacket::message,
             ByteBufCodecs.STRING_UTF8,
             HandleJoinMessagePacket::id,
+            ByteBufCodecs.STRING_UTF8,
+            HandleJoinMessagePacket::soundId,
             HandleJoinMessagePacket::new);
 
     @Override
@@ -32,12 +38,12 @@ public record HandleJoinMessagePacket(String message, String id) implements Cust
 
     public static void execute(HandleJoinMessagePacket packet, IPayloadContext context) {
         if(context.player() instanceof ServerPlayer self){
-            Component component = Component.Serializer.fromJson(packet.message, self.registryAccess());
+            Component component = packet.message;
             if(component == null) {
                 return;
             }
-            MutableComponent formattedMessage = FastTPA.getFormattedName(self).append(component);
-            if(ServerConfig.BROADCAST.get()) {
+            MutableComponent formattedMessage = FastTPAMod.getFormattedName(self).append(component);
+            if(ServerConfig.shouldBroadcast()) {
                 for(ServerPlayer serverPlayer : self.server.getPlayerList().getPlayers()) {
                     serverPlayer.displayClientMessage(formattedMessage, false);
                 }
@@ -47,6 +53,10 @@ public record HandleJoinMessagePacket(String message, String id) implements Cust
                     original.displayClientMessage(formattedMessage, false);
                     self.displayClientMessage(formattedMessage, false);
                 }
+            }
+            if(ServerConfig.shouldPlaySound()) {
+                Holder<SoundEvent> soundEventHolder = Holder.direct(SoundEvent.createVariableRangeEvent(ResourceLocation.parse(packet.soundId)));
+                self.level().playSound(null, self.getX(), self.getY(), self.getZ(), soundEventHolder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         }
     }

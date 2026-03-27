@@ -1,8 +1,9 @@
 package com.p1nero.fast_tpa.config;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.p1nero.fast_tpa.FastTPA;
+import com.p1nero.fast_tpa.FastTPAMod;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ComponentArgument;
@@ -12,12 +13,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@EventBusSubscriber(modid = FastTPA.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = FastTPAMod.MOD_ID)
 public class ClientConfig
 {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec.ConfigValue<String> SOS_MESSAGE;
     public static final ModConfigSpec.ConfigValue<String> WHEN_JOIN;
+    public static final ModConfigSpec.ConfigValue<String> SOUND_ID;
     public static final ModConfigSpec SPEC;
 
     static {
@@ -29,7 +31,10 @@ public class ClientConfig
         WHEN_JOIN = BUILDER
                 .comment("默认发送的支援文本")
                 .comment("https://minecraft.tools/en/json_text.php")
-                .define("when_join", "[\"\",{\"text\":\"\\u5b69\",\"color\":\"aqua\"},{\"text\":\"\\u5b50\",\"color\":\"red\"},{\"text\":\"\\u522b\"},{\"text\":\"\\u6015\",\"color\":\"dark_green\"},{\"text\":\"\\uff0c\",\"color\":\"dark_gray\"},{\"text\":\"\\u6211\",\"color\":\"gold\"},{\"text\":\"\\u6765\",\"color\":\"green\"},{\"text\":\"\\u52a9\",\"color\":\"dark_blue\"},{\"text\":\"\\u4f60\\uff01\",\"color\":\"yellow\"},{\"text\":\"[\\u70b9\\u51fb\\u67e5\\u770bjson\\u6587\\u672c\\u751f\\u6210\\u5668]\",\"color\":\"gray\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://minecraft.tools/en/json_text.php\"}},{\"text\":\" \\n\\u63d0\\u793a\\uff1a\\u7528fast_tpa_client\\u7cfb\\u5217\\u547d\\u4ee4\\u4e5f\\u53ef\\u4ee5\\u76f4\\u63a5\\u8fdb\\u884c\\u4fee\\u6539\\uff01\"}]");
+                .define("when_join", "[\"\",{\"text\":\"孩子别怕，我来助你！\"}]");
+        SOUND_ID = BUILDER
+                .comment("传送至对方身边时要播放的音频的id，例如：minecraft:block.end_portal.spawn")
+                .define("sound_id", "");
         SPEC = BUILDER.build();
     }
 
@@ -45,6 +50,11 @@ public class ClientConfig
                 .then(Commands.literal("when_join")
                         .then(Commands.argument("value", ComponentArgument.textComponent(event.getBuildContext()))
                                 .executes((context) -> setData(WHEN_JOIN, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value"), context.getSource().registryAccess()), context))
+                        )
+                )
+                .then(Commands.literal("sound_id")
+                        .then(Commands.argument("value", StringArgumentType.greedyString())
+                                .executes((context) -> setData(SOUND_ID, StringArgumentType.getString(context, "value"), context))
                         )
                 )
         );
