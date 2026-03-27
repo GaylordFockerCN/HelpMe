@@ -17,26 +17,18 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public class ClientConfig
 {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.ConfigValue<String> SOS_MESSAGE;
-    public static final ModConfigSpec.ConfigValue<String> WHEN_JOIN;
-    public static final ModConfigSpec.ConfigValue<String> SOUND_ID;
-    public static final ModConfigSpec SPEC;
-
-    static {
-        SOS_MESSAGE = BUILDER
-                .comment("默认发送的求救文本")
-                .comment("https://minecraft.tools/en/json_text.php")
-                .define("sos_message", "{" + "  \"text\": \"§l§o§6【发出救难信号】\"" + "}");
-
-        WHEN_JOIN = BUILDER
-                .comment("默认发送的支援文本")
-                .comment("https://minecraft.tools/en/json_text.php")
-                .define("when_join", "[\"\",{\"text\":\"孩子别怕，我来助你！\"}]");
-        SOUND_ID = BUILDER
-                .comment("传送至对方身边时要播放的音频的id，例如：minecraft:block.end_portal.spawn")
-                .define("sound_id", "");
-        SPEC = BUILDER.build();
-    }
+    public static final ModConfigSpec.ConfigValue<String> SOS_MESSAGE = BUILDER
+            .comment("默认发送的求救文本")
+            .comment("https://minecraft.tools/en/json_text.php")
+            .define("sos_message", "{" + "  \"text\": \"§l§o§6【发出救难信号】\"" + "}");
+    public static final ModConfigSpec.ConfigValue<String> WHEN_JOIN = BUILDER
+            .comment("默认发送的支援文本")
+            .comment("https://minecraft.tools/en/json_text.php")
+            .define("when_join", "[\"\",{\"text\":\"孩子别怕，我来助你！\"}]");
+    public static final ModConfigSpec.ConfigValue<String> SOUND_ID = BUILDER
+            .comment("传送至对方身边时要播放的音频的id，例如：minecraft:block.end_portal.spawn")
+            .define("sound_id", "");
+    public static final ModConfigSpec SPEC = BUILDER.build();
 
     @SubscribeEvent
     public static void registerCommands(RegisterClientCommandsEvent event) {
