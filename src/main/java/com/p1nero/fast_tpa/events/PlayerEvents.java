@@ -1,12 +1,12 @@
 package com.p1nero.fast_tpa.events;
 
-import com.p1nero.fast_tpa.FastTPA;
+import com.p1nero.fast_tpa.FastTPAMod;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = FastTPA.MOD_ID)
+@Mod.EventBusSubscriber(modid = FastTPAMod.MOD_ID)
 public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
@@ -19,9 +19,9 @@ public class PlayerEvents {
     }
 
     public static void init(Player serverPlayer) {
-        serverPlayer.getPersistentData().putBoolean(FastTPA.ACCEPTED, false);
-        serverPlayer.getPersistentData().putBoolean(FastTPA.CAN_ACCEPT, false);
-        serverPlayer.getPersistentData().putInt(FastTPA.LAST_SEND_TIME, 0);
+        serverPlayer.getPersistentData().putBoolean(FastTPAMod.ACCEPTED, false);
+        serverPlayer.getPersistentData().putBoolean(FastTPAMod.CAN_ACCEPT, false);
+        serverPlayer.getPersistentData().putInt(FastTPAMod.LAST_SEND_TIME, 0);
     }
 
 }

@@ -5,25 +5,27 @@ import com.p1nero.fast_tpa.config.ServerConfig;
 import com.p1nero.fast_tpa.network.PacketHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(FastTPA.MOD_ID)
-public class FastTPA {
+@Mod(FastTPAMod.MOD_ID)
+public class FastTPAMod {
     public static final String MOD_ID = "fast_tpa";
     public static final String ACCEPTED = "accepted";
     public static final String CAN_ACCEPT = "can_accept";
     public static final String LAST_SEND_TIME = "last_send_time";
-    public FastTPA(){
+    public FastTPAMod(){
         PacketHandler.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ServerConfig.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ServerConfig.SPEC, MOD_ID + "-server.toml");
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ServerConfig::onModConfig);
     }
 
-    public static MutableComponent getFormattedName(Player player) {
-        return Component.literal("[").append(player.getDisplayName()).append("] : ");
+    public static MutableComponent getFormattedName(ServerPlayer player) {
+        return Component.literal(String.format(ServerConfig.FORMAT.get(), player.getScoreboardName()));
     }
 
 }

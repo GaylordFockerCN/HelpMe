@@ -1,6 +1,6 @@
 package com.p1nero.fast_tpa.network;
 
-import com.p1nero.fast_tpa.FastTPA;
+import com.p1nero.fast_tpa.FastTPAMod;
 import com.p1nero.fast_tpa.network.packet.BasePacket;
 import com.p1nero.fast_tpa.network.packet.client.GetJoinMessagePacket;
 import com.p1nero.fast_tpa.network.packet.server.HandleJoinMessagePacket;
@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(FastTPA.MOD_ID, "main"),
+            new ResourceLocation(FastTPAMod.MOD_ID, "main"),
             () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals
     );
 

@@ -1,7 +1,7 @@
 package com.p1nero.fast_tpa.client;
 
 import com.p1nero.fast_tpa.config.ClientConfig;
-import com.p1nero.fast_tpa.FastTPA;
+import com.p1nero.fast_tpa.FastTPAMod;
 import com.p1nero.fast_tpa.network.PacketHandler;
 import com.p1nero.fast_tpa.network.PacketRelay;
 import com.p1nero.fast_tpa.network.packet.server.SOSPacket;
@@ -22,7 +22,7 @@ public class KeyMappings {
         event.register(SEND);
     }
 
-    @Mod.EventBusSubscriber(modid = FastTPA.MOD_ID)
+    @Mod.EventBusSubscriber(modid = FastTPAMod.MOD_ID)
     public static class HandleClientTick{
 
         @SubscribeEvent

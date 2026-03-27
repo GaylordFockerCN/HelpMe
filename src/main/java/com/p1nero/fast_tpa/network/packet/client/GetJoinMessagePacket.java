@@ -26,7 +26,7 @@ public record GetJoinMessagePacket(UUID uuid) implements BasePacket {
     @Override
     public void execute(Player player) {
         if(Minecraft.getInstance().player != null && Minecraft.getInstance().level != null){
-            PacketRelay.sendToServer(PacketHandler.INSTANCE, new HandleJoinMessagePacket(Component.Serializer.fromJson(ClientConfig.WHEN_JOIN.get()), uuid));
+            PacketRelay.sendToServer(PacketHandler.INSTANCE, new HandleJoinMessagePacket(Component.Serializer.fromJson(ClientConfig.WHEN_JOIN.get()), uuid, ClientConfig.SOUND_ID.get()));
         }
     }
 }
