@@ -44,7 +44,6 @@ public record HandleJoinMessagePacket(Component component, UUID id, String sound
                 }
             }
             if(ServerConfig.shouldPlaySound()) {
-                System.out.println(soundId);
                 Holder<SoundEvent> soundEventHolder = Holder.direct(SoundEvent.createVariableRangeEvent(new ResourceLocation(soundId)));
                 self.level().playSound(null, self.getX(), self.getY(), self.getZ(), soundEventHolder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
             }
