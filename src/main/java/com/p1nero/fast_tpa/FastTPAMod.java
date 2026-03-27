@@ -1,14 +1,17 @@
 package com.p1nero.fast_tpa;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import com.p1nero.fast_tpa.config.ClientConfig;
 import com.p1nero.fast_tpa.config.ServerConfig;
 import com.p1nero.fast_tpa.network.packet.client.GetJoinMessagePacket;
 import com.p1nero.fast_tpa.network.packet.server.HandleJoinMessagePacket;
 import com.p1nero.fast_tpa.network.packet.server.SOSPacket;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -37,6 +40,17 @@ public class FastTPAMod {
         // SERVERBOUND
         registrar.playToServer(HandleJoinMessagePacket.TYPE, HandleJoinMessagePacket.STREAM_CODEC, HandleJoinMessagePacket::execute);
         registrar.playToServer(SOSPacket.TYPE, SOSPacket.STREAM_CODEC, SOSPacket::execute);
+    }
+
+    public static Component fromJson(String message) {
+        JsonElement jsonElement = JsonParser.parseString(message);
+        return ComponentSerialization.CODEC.parse(JsonOps.INSTANCE, jsonElement).result().orElseThrow();
+    }
+
+    public static String toJson(Component component) {
+        JsonElement jsonElement = ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, component)
+                .getOrThrow();
+        return jsonElement.toString();
     }
 
     public static MutableComponent getFormattedName(ServerPlayer player) {

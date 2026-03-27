@@ -1,6 +1,6 @@
 {
   "key.fast_tpa.send": "发出救难信号",
-  "key.fast_tpa.category": "我来助你",
+  "key.category.fast_tpa.common": "我来助你",
   "info.fast_tpa.accept": " §a[前往支援]",
   "info.fast_tpa.cooldown": "冷却中！请等待 %d 秒",
   "info.fast_tpa.already": "§c已传送！"

@@ -12,20 +12,21 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(modid = FastTPAMod.MOD_ID)
 public class ClientConfig
 {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.ConfigValue<String> SOS_MESSAGE = BUILDER
+    public static final ModConfigSpec.ConfigValue<@NotNull String> SOS_MESSAGE = BUILDER
             .comment("默认发送的求救文本")
             .comment("https://minecraft.tools/en/json_text.php")
             .define("sos_message", "{" + "  \"text\": \"§l§o§6【发出救难信号】\"" + "}");
-    public static final ModConfigSpec.ConfigValue<String> WHEN_JOIN = BUILDER
+    public static final ModConfigSpec.ConfigValue<@NotNull String> WHEN_JOIN = BUILDER
             .comment("默认发送的支援文本")
             .comment("https://minecraft.tools/en/json_text.php")
             .define("when_join", "[\"\",{\"text\":\"孩子别怕，我来助你！\"}]");
-    public static final ModConfigSpec.ConfigValue<String> SOUND_ID = BUILDER
+    public static final ModConfigSpec.ConfigValue<@NotNull String> SOUND_ID = BUILDER
             .comment("传送至对方身边时要播放的音频的id，例如：minecraft:block.end_portal.spawn")
             .define("sound_id", "");
     public static final ModConfigSpec SPEC = BUILDER.build();
@@ -36,12 +37,12 @@ public class ClientConfig
         dispatcher.register(Commands.literal("fast_tpa_client")
                 .then(Commands.literal("sos_message")
                     .then(Commands.argument("value", ComponentArgument.textComponent(event.getBuildContext()))
-                            .executes((context) -> setData(SOS_MESSAGE, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value"), context.getSource().registryAccess()), context))
+                            .executes((context) -> setData(SOS_MESSAGE, FastTPAMod.toJson(ComponentArgument.getRawComponent(context, "value")), context))
                     )
                 )
                 .then(Commands.literal("when_join")
                         .then(Commands.argument("value", ComponentArgument.textComponent(event.getBuildContext()))
-                                .executes((context) -> setData(WHEN_JOIN, Component.Serializer.toJson(ComponentArgument.getComponent(context, "value"), context.getSource().registryAccess()), context))
+                                .executes((context) -> setData(WHEN_JOIN, FastTPAMod.toJson(ComponentArgument.getRawComponent(context, "value")), context))
                         )
                 )
                 .then(Commands.literal("sound_id")
@@ -56,7 +57,7 @@ public class ClientConfig
         CommandSourceStack stack = context.getSource();
         key.set(value);
         if(stack.getPlayer() != null){
-            stack.getPlayer().displayClientMessage(Component.literal( context.getInput() + " : SUCCESS"), false);
+            stack.getPlayer().sendSystemMessage(Component.literal( context.getInput() + " : SUCCESS"));
         }
         return 0;
     }

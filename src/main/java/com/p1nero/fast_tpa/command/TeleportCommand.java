@@ -15,6 +15,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.Set;
+
 @EventBusSubscriber(modid = FastTPAMod.MOD_ID)
 public class TeleportCommand {
    private static final SimpleCommandExceptionType INVALID_POSITION = new SimpleCommandExceptionType(Component.translatable("commands.teleport.invalidPosition"));
@@ -24,7 +26,7 @@ public class TeleportCommand {
       dispatcher.register(Commands.literal("fast_tpa_tp")
               .requires((commandSourceStack) -> {
                  ServerPlayer serverPlayer = commandSourceStack.getPlayer();
-                 return serverPlayer != null && serverPlayer.getPersistentData().getBoolean(FastTPAMod.CAN_ACCEPT);
+                 return serverPlayer != null && serverPlayer.getPersistentData().getBooleanOr(FastTPAMod.CAN_ACCEPT, true);
               })
               .then(Commands.argument("other", EntityArgument.player())
                       .then(Commands.argument("self", EntityArgument.player())
@@ -35,11 +37,11 @@ public class TeleportCommand {
       if(other == null || self == null) {
          throw INVALID_POSITION.create();
       }
-      if(other.getPersistentData().getBoolean(FastTPAMod.ACCEPTED)) {
-         other.displayClientMessage(Component.translatable("info.fast_tpa.already"), false);
+      if(other.getPersistentData().getBooleanOr(FastTPAMod.ACCEPTED, false)) {
+         other.sendSystemMessage(Component.translatable("info.fast_tpa.already"));
          return 0;
       }
-      other.teleportTo(self.serverLevel(), self.getX(), self.getY(), self.getZ(), other.getYRot(), other.getXRot());
+      other.teleportTo(self.level(), self.getX(), self.getY(), self.getZ(), Set.of(), other.getYRot(), other.getXRot(), false);
       other.getPersistentData().putBoolean(FastTPAMod.ACCEPTED, true);
       other.getPersistentData().putBoolean(FastTPAMod.CAN_ACCEPT, false);
       PacketDistributor.sendToPlayer(other, new GetJoinMessagePacket(self.getUUID().toString()));

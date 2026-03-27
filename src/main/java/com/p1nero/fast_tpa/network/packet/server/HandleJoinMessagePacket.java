@@ -10,7 +10,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public record HandleJoinMessagePacket(Component message, String id, String soundId) implements CustomPacketPayload {
-    public static final Type<HandleJoinMessagePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(FastTPAMod.MOD_ID, "handle_join_message_packet"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, HandleJoinMessagePacket> STREAM_CODEC = StreamCodec.composite(
+    public static final Type<@NotNull HandleJoinMessagePacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(FastTPAMod.MOD_ID, "handle_join_message_packet"));
+    public static final StreamCodec<@NotNull RegistryFriendlyByteBuf, @NotNull HandleJoinMessagePacket> STREAM_CODEC = StreamCodec.composite(
             ComponentSerialization.STREAM_CODEC,
             HandleJoinMessagePacket::message,
             ByteBufCodecs.STRING_UTF8,
@@ -32,7 +32,7 @@ public record HandleJoinMessagePacket(Component message, String id, String sound
             HandleJoinMessagePacket::new);
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends @NotNull CustomPacketPayload> type() {
         return TYPE;
     }
 
@@ -44,18 +44,18 @@ public record HandleJoinMessagePacket(Component message, String id, String sound
             }
             MutableComponent formattedMessage = FastTPAMod.getFormattedName(self).append(component);
             if(ServerConfig.shouldBroadcast()) {
-                for(ServerPlayer serverPlayer : self.server.getPlayerList().getPlayers()) {
-                    serverPlayer.displayClientMessage(formattedMessage, false);
+                for(ServerPlayer serverPlayer : self.level().getServer().getPlayerList().getPlayers()) {
+                    serverPlayer.sendSystemMessage(formattedMessage);
                 }
             } else {
-                Player original = self.serverLevel().getPlayerByUUID(UUID.fromString(packet.id()));
+                Player original = self.level().getPlayerByUUID(UUID.fromString(packet.id()));
                 if(original != null) {
-                    original.displayClientMessage(formattedMessage, false);
-                    self.displayClientMessage(formattedMessage, false);
+                    original.sendSystemMessage(formattedMessage);
+                    self.sendSystemMessage(formattedMessage);
                 }
             }
             if(ServerConfig.shouldPlaySound()) {
-                Holder<SoundEvent> soundEventHolder = Holder.direct(SoundEvent.createVariableRangeEvent(ResourceLocation.parse(packet.soundId)));
+                Holder<@NotNull SoundEvent> soundEventHolder = Holder.direct(SoundEvent.createVariableRangeEvent(Identifier.parse(packet.soundId)));
                 self.level().playSound(null, self.getX(), self.getY(), self.getZ(), soundEventHolder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         }

@@ -49,7 +49,7 @@ public class ServerConfig {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        dispatcher.register(Commands.literal("fast_tpa_server").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))
+        dispatcher.register(Commands.literal("fast_tpa_server").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("cooldown")
                     .then(Commands.argument("value", IntegerArgumentType.integer())
                             .executes((context) -> setData(COOLDOWN, IntegerArgumentType.getInteger(context, "value"), context))
@@ -83,7 +83,7 @@ public class ServerConfig {
         CommandSourceStack stack = context.getSource();
         key.set(value);
         if(stack.getPlayer() != null){
-            stack.getPlayer().displayClientMessage(Component.literal( context.getInput() + " : SUCCESS"), false);
+            stack.getPlayer().sendSystemMessage(Component.literal( context.getInput() + " : SUCCESS"));
         }
         return 0;
     }
