@@ -12,9 +12,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = FastTPAMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TeleportCommand {
@@ -39,6 +42,10 @@ public class TeleportCommand {
       if(other.getPersistentData().getBoolean(FastTPAMod.ACCEPTED)) {
          other.displayClientMessage(Component.translatable("info.fast_tpa.already"), false);
          return 0;
+      }
+      Entity vehicle = other.getVehicle();
+      if(vehicle != null) {
+          vehicle.teleportTo(self.serverLevel(), self.getX(), self.getY(), self.getZ(), Set.of(), other.getYRot(), other.getXRot());
       }
       other.teleportTo(self.serverLevel(), self.getX(), self.getY(), self.getZ(), other.getYRot(), other.getXRot());
       other.getPersistentData().putBoolean(FastTPAMod.ACCEPTED, true);
